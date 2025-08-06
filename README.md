@@ -1,7 +1,7 @@
 # buildroot-2025.02.x
 Buildroot 2025.02.x for Nuvoton MA35/NUC980/NUC970 SoC
 
-# Build with Raspberry Pi 5 with Ubuntu 25.04
+# Build with Raspberry Pi 5 on Ubuntu 25.04
 DO NOT WASTE YOUR Raspberry Pi 5. The following boards are verified using Raspberry Pi 5
 as the build host.
 
