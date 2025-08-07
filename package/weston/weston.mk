@@ -4,7 +4,7 @@
 #
 ################################################################################
 
-WESTON_VERSION = 14.0.1
+WESTON_VERSION = $(call qstrip,$(BR2_WESTON_VERSION))
 WESTON_SITE = https://gitlab.freedesktop.org/wayland/weston/-/releases/$(WESTON_VERSION)/downloads
 WESTON_SOURCE = weston-$(WESTON_VERSION).tar.xz
 WESTON_LICENSE = MIT
@@ -19,7 +19,6 @@ WESTON_DEPENDENCIES = host-pkgconf wayland wayland-protocols \
 WESTON_CONF_OPTS = \
 	-Ddoc=false \
 	-Dremoting=false \
-	-Dbackend-vnc=false \
 	-Dtools=calibrator,debug,info,terminal,touch-calibrator
 
 ifeq ($(BR2_PACKAGE_WESTON_SIMPLE_CLIENTS),y)
@@ -64,9 +63,7 @@ WESTON_CONF_OPTS += -Dpipewire=false -Dbackend-pipewire=false
 endif
 else
 WESTON_CONF_OPTS += \
-	-Drenderer-gl=false \
-	-Dpipewire=false \
-	-Dbackend-pipewire=false
+	-Drenderer-gl=false
 endif
 
 WESTON_CONF_OPTS += -Dsimple-clients=$(subst $(space),$(comma),$(strip $(WESTON_SIMPLE_CLIENTS)))
@@ -177,5 +174,45 @@ WESTON_DEPENDENCIES += pango
 else
 WESTON_CONF_OPTS += -Ddemo-clients=false
 endif
+
+ifeq ($(call qstrip,$(BR2_WESTON_VERSION)),10.0.5)
+WESTON_CONF_OPTS += \
+	-Dlauncher-logind=false \
+	-Dpipewire=false \
+	-Dcolor-management-colord=false
+endif
+
+ifeq ($(call qstrip,$(BR2_WESTON_VERSION)),14.0.1)
+WESTON_CONF_OPTS += \
+	-Dbackend-vnc=false
+endif
+
+define WESTON_TARGET_INSTALL_CMD
+	$(INSTALL) -m 0755 -D $(WESTON_PKGDIR)/weston.sh \
+                $(TARGET_DIR)/etc/profile.d/weston.sh
+	$(INSTALL) -m 0755 -D $(WESTON_PKGDIR)/weston.ini \
+                $(TARGET_DIR)/etc/xdg/weston/weston.ini
+endef
+
+WESTON_POST_INSTALL_TARGET_HOOKS += WESTON_TARGET_INSTALL_CMD
+
+ifeq ($(BR2_PACKAGE_WESTON_RESISTIVE_TOUCHSCREEN),y)
+define WESTON_CONFIG_RESISTIVE_TOUCHSCREEN
+	$(INSTALL) -m 0755 -D $(WESTON_PKGDIR)/save-resistive-touch-calibration.sh \
+                  $(TARGET_DIR)/etc/xdg/save-resistive-touch-calibration.sh
+	$(SED) 's/^touchscreen_calibrator=.*/touchscreen_calibrator=true/g'  $(TARGET_DIR)/etc/xdg/weston/weston.ini
+	$(SED) 's/^USING_RESISTIVE_TOUCHSCREEN=.*/USING_RESISTIVE_TOUCHSCREEN=1/g' $(TARGET_DIR)/etc/profile.d/weston.sh
+endef
+WESTON_POST_INSTALL_TARGET_HOOKS += WESTON_CONFIG_RESISTIVE_TOUCHSCREEN
+endif
+
+define WESTON_CONFIG_TTY_AUTOLOGIN
+	if grep -Eq "^BR2_PACKAGE_WESTON_AUTOLOGIN=y$\" ${BR2_CONFIG}; then \
+		sed -i 's|^.*respawn:/sbin/getty.*|console::respawn:-/bin/sh|' ${TARGET_DIR}/etc/inittab; \
+	else \
+		cp -f $(TOPDIR)/package/busybox/inittab ${TARGET_DIR}/etc/inittab; \
+	fi
+endef
+WESTON_POST_INSTALL_TARGET_HOOKS += WESTON_CONFIG_TTY_AUTOLOGIN
 
 $(eval $(meson-package))

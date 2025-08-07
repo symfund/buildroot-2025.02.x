@@ -33,11 +33,36 @@ config BR2_PACKAGE_WESTON
 
 if BR2_PACKAGE_WESTON
 
+config BR2_PACKAGE_WESTON_AUTOLOGIN
+	bool "TTY autologin"
+	default y
+	help
+	  Once TTY autologin is configured, when computer is powered on,
+          you will be logged in automatically without typing password. 
+
+choice
+	prompt "touchscreen type"
+	default BR2_PACKAGE_WESTON_CAPACITIVE_TOUCHSCREEN
+
+config BR2_PACKAGE_WESTON_RESISTIVE_TOUCHSCREEN
+	bool "resistive"
+
+config BR2_PACKAGE_WESTON_CAPACITIVE_TOUCHSCREEN
+	bool "capacitive"
+
+endchoice
+
 choice
 	prompt "default compositor"
 
+config BR2_PACKAGE_WESTON_DEFAULT_FBDEV
+        bool "fbdev"
+	depends on !BR2_TARGET_KERNEL_DRM_MA35_VERSION
+        select BR2_PACKAGE_WESTON_FBDEV
+
 config BR2_PACKAGE_WESTON_DEFAULT_DRM
 	bool "drm"
+	depends on BR2_TARGET_KERNEL_DRM_MA35_VERSION
 	select BR2_PACKAGE_WESTON_DRM
 
 config BR2_PACKAGE_WESTON_DEFAULT_HEADLESS
@@ -69,14 +94,20 @@ endchoice
 
 config BR2_PACKAGE_WESTON_DEFAULT_COMPOSITOR
 	string
+	default "fbdev"    if BR2_PACKAGE_WESTON_DEFAULT_FBDEV
 	default "drm"      if BR2_PACKAGE_WESTON_DEFAULT_DRM
 	default "headless" if BR2_PACKAGE_WESTON_DEFAULT_HEADLESS
 	default "rdp"      if BR2_PACKAGE_WESTON_DEFAULT_RDP
 	default "wayland"  if BR2_PACKAGE_WESTON_DEFAULT_WAYLAND
 	default "x11"      if BR2_PACKAGE_WESTON_DEFAULT_X11
 
+config BR2_PACKAGE_WESTON_FBDEV
+        bool "fbdev compositor"
+	depends on !BR2_TARGET_KERNEL_DRM_MA35_VERSION
+
 config BR2_PACKAGE_WESTON_DRM
 	bool "DRM compositor"
+	depends on BR2_TARGET_KERNEL_DRM_MA35_VERSION
 
 # FreeRDP needs threads and !static, already the case for weston
 config BR2_PACKAGE_WESTON_RDP
@@ -219,3 +250,8 @@ comment "demo clients needs an OpenGL ES/EGL provider and a toolchain w/ wchar, 
 		!BR2_PACKAGE_HAS_LIBEGL || !BR2_TOOLCHAIN_GCC_AT_LEAST_4_9
 
 endif
+
+config BR2_WESTON_VERSION
+        string
+        default "10.0.5" if !BR2_TARGET_KERNEL_DRM_MA35_VERSION
+        default "14.0.1" if BR2_TARGET_KERNEL_DRM_MA35_VERSION
