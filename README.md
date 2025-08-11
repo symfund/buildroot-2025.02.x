@@ -10,7 +10,8 @@ The following boards are verified using Raspberry Pi 5 as the build machine.
 3. NuMaker-IoT-MA35D16F70 V2.2
 4. NuMaker-SOM-MA35D16A81 V2.1
 
-# Configuring Weston in Buildroot
+# Configure Weston in Buildroot
+```
 1. Git clone this repository
    $ git clone https://github.com/symfund/buildroot-2025.02.x.git
 2. Change directory to the root of Buildroot
@@ -35,5 +36,12 @@ The following boards are verified using Raspberry Pi 5 as the build machine.
            [*]     OpenGL EGL 
 6. Build firmware
    $ make
-7. Make bootable SD
-   $ sudo dd if=output/images/<core-image-file-for-sdcard> of=/dev/sdb conv=fsync 
+7. Make the bootable SD card
+   Before making bootable SD, execute fdisk to check the real device path of your SD card.
+   $ sudo fdisk -l
+   $ sudo dd if=output/images/core-image-buildroot-ma35d1-som-256m.rootfs.sdcard of=/dev/sdb conv=fsync
+8. Configure boot jumper pins to boot from SD card 
+   _____________________________________________________________
+   boot device | PG0 | PG1 | PG2 | PG3 | PG4 | PG5 | PG6 | PG7 |
+   -------------------------------------------------------------
+```
