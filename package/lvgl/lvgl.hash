@@ -1,0 +1,3 @@
+# From https://github.com/lvgl/lvgl/releases
+sha256  4933becfd3603b29158a5d04138139582836ef2bc17beb6c39dccda9cb0d32e7  lvgl-9.3.0.tar.gz
+sha512  cd341d37905a22535d0a4c3bbde39776320c8548b91c3de775713efbb9bb345e0dccc928d4c84accf43e7f6068b21d3ca8083ad3aaa5ec1cd9a037e767fa0d96  lvgl-9.3.0.tar.gz

@@ -1,0 +1,12 @@
+diff -urN a/src/drivers/wayland/lv_wayland.c b/src/drivers/wayland/lv_wayland.c
+--- a/src/drivers/wayland/lv_wayland.c	2025-06-03 19:57:17.000000000 +0800
++++ b/src/drivers/wayland/lv_wayland.c	2025-08-11 13:07:32.750811871 +0800
+@@ -347,7 +347,7 @@
+ #if LV_WAYLAND_XDG_SHELL
+     else if(strcmp(interface, xdg_wm_base_interface.name) == 0) {
+         /* supporting version 2 of the XDG protocol - ensures greater compatibility */
+-        app->xdg_wm = wl_registry_bind(app->registry, name, &xdg_wm_base_interface, 2);
++        app->xdg_wm = wl_registry_bind(app->registry, name, &xdg_wm_base_interface, 1);
+         xdg_wm_base_add_listener(app->xdg_wm, lv_wayland_xdg_shell_get_wm_base_listener(), app);
+     }
+ #endif

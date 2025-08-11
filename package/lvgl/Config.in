@@ -1,0 +1,236 @@
+config BR2_PACKAGE_LVGL
+        bool "Light and Versatile Graphics Library"
+        select BR2_PACKAGE_HOST_CMAKE
+
+if BR2_PACKAGE_LVGL
+
+choice
+        prompt "LVGL Version"
+        default BR2_LVGL_VERSION_9_3_0
+        help
+          Select the version of weston you wish to use.
+
+config BR2_LVGL_VERSION_9_3_0
+	bool "9.3.0"
+
+config BR2_LVGL_VERSION_9_2_2
+        bool "9.2.2"
+
+config BR2_LVGL_VERSION_9_2_0
+        bool "9.2.0"
+
+config BR2_LVGL_VERSION_9_1_0
+        bool "9.1.0"
+
+config BR2_LVGL_VERSION_9_0_0
+        bool "9.0.0"
+
+config BR2_LVGL_VERSION_8_4_0
+        bool "8.4.0"
+
+config BR2_LVGL_VERSION_8_3_11
+        bool "8.3.11"
+
+config BR2_LVGL_VERSION_8_3_0
+        bool "8.3.0"
+
+config BR2_LVGL_VERSION_8_2_0
+        bool "8.2.0"
+
+config BR2_LVGL_VERSION_8_1_0
+        bool "8.1.0"
+
+config BR2_LVGL_VERSION_8_0_2
+        bool "8.0.2"
+
+config BR2_LVGL_VERSION_8_0_0
+        bool "8.0.0"
+
+endchoice
+
+config BR2_LVGL_VERSION
+	string
+	default "8.0.0" if BR2_LVGL_VERSION_8_0_0
+	default "8.0.2" if BR2_LVGL_VERSION_8_0_2
+	default "8.1.0" if BR2_LVGL_VERSION_8_1_0
+	default "8.2.0" if BR2_LVGL_VERSION_8_2_0
+	default "8.3.0" if BR2_LVGL_VERSION_8_3_0
+	default "8.3.11" if BR2_LVGL_VERSION_8_3_11
+	default "8.4.0" if BR2_LVGL_VERSION_8_4_0
+	default "9.0.0" if BR2_LVGL_VERSION_9_0_0
+	default "9.1.0" if BR2_LVGL_VERSION_9_1_0
+	default "9.2.0" if BR2_LVGL_VERSION_9_2_0
+	default "9.2.2" if BR2_LVGL_VERSION_9_2_2
+	default "9.3.0" if BR2_LVGL_VERSION_9_3_0
+
+choice
+        prompt "Display Backend"
+        default BR2_LVGL_WAYLAND_BACKEND if BR2_PACKAGE_WESTON
+        help
+          Select the display backend of LVGL you wish to use.
+
+config BR2_LVGL_WAYLAND_BACKEND
+	bool "wayland"
+	depends on BR2_PACKAGE_WESTON
+	select BR2_LVGL_WAYLAND_BUILD_OPTIONS
+
+config BR2_LVGL_FBDEV_BACKEND
+        bool "fbdev"
+	depends on !BR2_PACKAGE_WESTON
+
+config BR2_LVGL_DRM_BACKEND
+        bool "DRM"
+	depends on BR2_TARGET_KERNEL_DRM_MA35_VERSION && !BR2_PACKAGE_WESTON
+
+endchoice
+
+config BR2_LVGL_DISPLAY_BACKEND
+        string
+        default "wayland" if BR2_LVGL_WAYLAND_BACKEND
+        default "fbdev" if BR2_LVGL_FBDEV_BACKEND
+        default "DRM" if BR2_LVGL_DRM_BACKEND
+
+choice
+        prompt "Color Depth"
+        default BR2_LVGL_COLOR_DEPTH_32
+        help
+          Select the color depth of LVGL you wish to use.
+
+config BR2_LVGL_COLOR_DEPTH_32
+        bool "32"
+
+config BR2_LVGL_COLOR_DEPTH_24
+        bool "24"
+
+config BR2_LVGL_COLOR_DEPTH_16
+        bool "16"
+
+config BR2_LVGL_COLOR_DEPTH_8
+        bool "8"
+
+config BR2_LVGL_COLOR_DEPTH_1
+        bool "1"
+
+endchoice
+
+config BR2_LVGL_COLOR_DEPTH
+        string
+        default "32" if BR2_LVGL_COLOR_DEPTH_32
+        default "24" if BR2_LVGL_COLOR_DEPTH_24
+        default "16" if BR2_LVGL_COLOR_DEPTH_16
+	default "8" if BR2_LVGL_COLOR_DEPTH_8
+	default "1" if BR2_LVGL_COLOR_DEPTH_1
+
+config BR2_LVGL_MULTI_TOUCH_GESTURE_RECOGNITION
+	bool "multi-touch gesture recognition"
+
+config BR2_LVGL_LOG_MODULE
+	bool "log module"
+
+if BR2_LVGL_WAYLAND_BACKEND
+
+config BR2_LVGL_WAYLAND_BUILD_OPTIONS
+	bool "Wayland backend options"
+	default y
+
+if BR2_LVGL_WAYLAND_BUILD_OPTIONS
+
+config BR2_LVGL_WAYLAND_WINDOW_DECORATION
+        bool "Client Side Decoration"
+	default y
+
+config BR2_LVGL_WAYLAND_WL_SHELL
+        bool "legacy wl_shell"
+
+endif
+
+endif
+
+config BR2_LVGL_BUILD_EXAMPLES
+        bool "Build examples (library)"
+	default y
+
+config BR2_LVGL_BUILD_DEMOS
+        bool "Build demos (library)"
+        default y
+
+if BR2_LVGL_BUILD_DEMOS
+
+config BR2_LVGL_WIDGETS_DEMO
+        bool "widgets demo"
+
+config BR2_LVGL_KEYBOARD_ENCODER_DEMO
+        bool "keyboard and encoder demo"
+
+config BR2_LVGL_BENCHMARK_DEMO
+        bool "benchmark demo"
+
+if BR2_LVGL_BENCHMARK_DEMO
+
+config BR2_LVGL_BENCHMARk_ALIGNED_FONTS
+	bool "aligned fonts"
+
+endif
+
+config BR2_LVGL_RENDER_DEMO
+        bool "render demo"
+
+config BR2_LVGL_STRESS_DEMO
+        bool "stress demo"
+
+config BR2_LVGL_MUSIC_DEMO
+        bool "music demo"
+
+if BR2_LVGL_MUSIC_DEMO
+
+config BR2_LVGL_MUSIC_SQUARE
+	bool "square"
+
+config BR2_LVGL_MUSIC_LANDSCAPE
+        bool "landscape"
+
+config BR2_LVGL_MUSIC_ROUND
+        bool "round"
+
+config BR2_LVGL_MUSIC_LARGE
+        bool "large"
+
+config BR2_LVGL_MUSIC_AUTO_PLAY
+        bool "auto play"
+
+endif
+
+config BR2_LVGL_VECTOR_GRAPHIC_DEMO
+        bool "vector graphic demo"
+
+config BR2_LVGL_FLEX_LAYOUT_DEMO
+        bool "flex layout demo"
+
+config BR2_LVGL_MULTILANG_DEMO
+        bool "multilang demo"
+
+config BR2_LVGL_TRANSFORM_DEMO
+        bool "transform demo"
+
+config BR2_LVGL_SCROLL_DEMO
+        bool "scroll demo"
+
+config BR2_LVGL_EBIKE_DEMO
+        bool "ebike demo"
+
+if BR2_LVGL_EBIKE_DEMO
+
+config BR2_LVGL_EBIKE_PORTRAIT
+	bool "portrait"
+
+endif
+
+config BR2_LVGL_HI_RES_DEMO
+        bool "hi-res demo"
+
+config BR2_LVGL_SMARTWATCH_DEMO
+        bool "smartwatch demo"
+
+endif
+
+endif
