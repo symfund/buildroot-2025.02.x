@@ -22,6 +22,7 @@ The following boards are verified using Raspberry Pi 5 as the build machine.
 4. Load a specific buildroot configuration file for target board
    $ make numaker_som_ma35d16a910_defconfig
 5. Configure buildroot
+   $ make menuconfig
    --> System configuration --> /dev management
            (X) Dynamic using devtmpfs + eudev
 
