@@ -20,6 +20,7 @@ config BR2_PACKAGE_WESTON
 	select BR2_PACKAGE_LIBDISPLAY_INFO
 	select BR2_PACKAGE_LIBDRM
 	select BR2_PACKAGE_SEATD
+	select BR2_PACKAGE_SEATD_DAEMON
 	# Runtime dependency
 	select BR2_PACKAGE_XKEYBOARD_CONFIG
 	select BR2_PACKAGE_WESTON_SHELL_DESKTOP if !BR2_PACKAGE_WESTON_HAS_SHELL
@@ -32,6 +33,31 @@ config BR2_PACKAGE_WESTON
 	  http://wayland.freedesktop.org/
 
 if BR2_PACKAGE_WESTON
+
+choice
+	prompt "Weston Version"
+	default BR2_WESTON_VERSION_10_0_5 if !BR2_TARGET_KERNEL_DRM_MA35_VERSION
+	default BR2_WESTON_VERSION_14_0_1 if BR2_TARGET_KERNEL_DRM_MA35_VERSION
+	help
+	  Select the version of weston you wish to use.
+
+config BR2_WESTON_VERSION_9_0_0
+	bool "9.0.0"
+	
+config BR2_WESTON_VERSION_10_0_5
+	bool "10.0.5"
+
+config BR2_WESTON_VERSION_14_0_1
+	bool "14.0.1"
+	depends on BR2_TARGET_KERNEL_DRM_MA35_VERSION # only for DRM
+
+endchoice
+
+config BR2_WESTON_VERSION
+        string
+        default "9.0.0" if BR2_WESTON_VERSION_9_0_0
+        default "10.0.5" if BR2_WESTON_VERSION_10_0_5
+        default "14.0.1" if BR2_WESTON_VERSION_14_0_1
 
 config BR2_PACKAGE_WESTON_AUTOLOGIN
 	bool "TTY autologin"
@@ -251,7 +277,3 @@ comment "demo clients needs an OpenGL ES/EGL provider and a toolchain w/ wchar, 
 
 endif
 
-config BR2_WESTON_VERSION
-        string
-        default "10.0.5" if !BR2_TARGET_KERNEL_DRM_MA35_VERSION
-        default "14.0.1" if BR2_TARGET_KERNEL_DRM_MA35_VERSION

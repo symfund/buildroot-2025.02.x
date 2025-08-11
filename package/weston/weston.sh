@@ -14,7 +14,7 @@ export LIBGL_ALWAYS_SOFTWARE=true
 weston_pid=$(pidof weston)
 
 if [[ -z "${weston_pid}" ]] ; then
-	weston --tty=1 --config=/etc/xdg/weston/weston.ini &
+	weston ##TTY_OPTION## --config=/etc/xdg/weston/weston.ini &
 fi
 
 # weston 9.0.0, display_id=0

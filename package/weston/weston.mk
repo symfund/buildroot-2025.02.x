@@ -19,6 +19,7 @@ WESTON_DEPENDENCIES = host-pkgconf wayland wayland-protocols \
 WESTON_CONF_OPTS = \
 	-Ddoc=false \
 	-Dremoting=false \
+	$(if $(BR2_WESTON_VERSION_14_0_1),-Dbackend-vnc=false,) \
 	-Dtools=calibrator,debug,info,terminal,touch-calibrator
 
 ifeq ($(BR2_PACKAGE_WESTON_SIMPLE_CLIENTS),y)
@@ -49,6 +50,11 @@ else
 WESTON_CONF_OPTS += -Dimage-webp=false
 endif
 
+ifeq ($(BR2_WESTON_VERSION_9_0_0),y)
+WESTON_CONF_OPTS += \
+	-Dweston-launch=false
+endif
+
 ifeq ($(BR2_PACKAGE_HAS_LIBEGL)$(BR2_PACKAGE_HAS_LIBGBM)$(BR2_PACKAGE_HAS_LIBGLES),yyy)
 WESTON_CONF_OPTS += -Drenderer-gl=true
 WESTON_DEPENDENCIES += libegl libgbm libgles
@@ -59,11 +65,13 @@ ifeq ($(BR2_PACKAGE_PIPEWIRE)$(BR2_PACKAGE_WESTON_DRM),yy)
 WESTON_CONF_OPTS += -Dpipewire=true -Dbackend-pipewire=true
 WESTON_DEPENDENCIES += pipewire
 else
-WESTON_CONF_OPTS += -Dpipewire=false -Dbackend-pipewire=false
+WESTON_CONF_OPTS += -Dpipewire=false \
+	$(if $(BR2_WESTON_VERSION_14_0_1),-Dbackend-pipewire=false,)
 endif
 else
 WESTON_CONF_OPTS += \
-	-Drenderer-gl=false
+	-Drenderer-gl=false \
+	-Dpipewire=false
 endif
 
 WESTON_CONF_OPTS += -Dsimple-clients=$(subst $(space),$(comma),$(strip $(WESTON_SIMPLE_CLIENTS)))
@@ -73,6 +81,14 @@ WESTON_DEPENDENCIES += freerdp
 WESTON_CONF_OPTS += -Dbackend-rdp=true
 else
 WESTON_CONF_OPTS += -Dbackend-rdp=false
+endif
+
+ifeq ($(BR2_WESTON_VERSION_14_0_1),)
+ifeq ($(BR2_PACKAGE_WESTON_FBDEV),y)
+WESTON_CONF_OPTS += -Dbackend-fbdev=true
+else
+WESTON_CONF_OPTS += -Dbackend-fbdev=false
+endif
 endif
 
 ifeq ($(BR2_PACKAGE_WESTON_DRM),y)
@@ -175,16 +191,10 @@ else
 WESTON_CONF_OPTS += -Ddemo-clients=false
 endif
 
-ifeq ($(call qstrip,$(BR2_WESTON_VERSION)),10.0.5)
+ifeq ($(BR2_WESTON_VERSION_9_0_0)$(BR2_WESTON_VERSION_10_0_5),y)
 WESTON_CONF_OPTS += \
-	-Dlauncher-logind=false \
-	-Dpipewire=false \
-	-Dcolor-management-colord=false
-endif
-
-ifeq ($(call qstrip,$(BR2_WESTON_VERSION)),14.0.1)
-WESTON_CONF_OPTS += \
-	-Dbackend-vnc=false
+        -Dlauncher-logind=false \
+        -Dcolor-management-colord=false
 endif
 
 define WESTON_TARGET_INSTALL_CMD
@@ -193,7 +203,6 @@ define WESTON_TARGET_INSTALL_CMD
 	$(INSTALL) -m 0755 -D $(WESTON_PKGDIR)/weston.ini \
                 $(TARGET_DIR)/etc/xdg/weston/weston.ini
 endef
-
 WESTON_POST_INSTALL_TARGET_HOOKS += WESTON_TARGET_INSTALL_CMD
 
 ifeq ($(BR2_PACKAGE_WESTON_RESISTIVE_TOUCHSCREEN),y)
@@ -214,5 +223,19 @@ define WESTON_CONFIG_TTY_AUTOLOGIN
 	fi
 endef
 WESTON_POST_INSTALL_TARGET_HOOKS += WESTON_CONFIG_TTY_AUTOLOGIN
+
+define WESTON_CONFIG_RENDER_BACKEND
+	if grep -Eq "^BR2_WESTON_VERSION_14_0_1=y" ${BR2_CONFIG}; then \
+		sed -i 's|^.*#renderer=pixman.*|renderer=pixman|' $(TARGET_DIR)/etc/xdg/weston/weston.ini; \
+		sed -i 's|^backend=.*|backend=drm-backend.so|' $(TARGET_DIR)/etc/xdg/weston/weston.ini; \
+		sed -i 's|##TTY_OPTION##||' $(TARGET_DIR)/etc/profile.d/weston.sh; \
+	else \
+		sed -i 's|##TTY_OPTION##|--tty=1|' $(TARGET_DIR)/etc/profile.d/weston.sh; \
+	fi; \
+	if grep -Eq "^BR2_WESTON_VERSION_9_0_0=y" ${BR2_CONFIG}; then \
+		sed -i 's|^display_id=.*|display_id=0|' $(TARGET_DIR)/etc/profile.d/weston.sh; \
+	fi
+endef
+WESTON_POST_INSTALL_TARGET_HOOKS += WESTON_CONFIG_RENDER_BACKEND
 
 $(eval $(meson-package))
