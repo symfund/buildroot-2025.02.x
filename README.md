@@ -75,3 +75,12 @@ $ rm -rf output/images; mkdir -p output/images
 $ make arm-trusted-firmware-dirclean uboot-dirclean optee-os-dirclean linux-dirclean
 $ make
 ```
+
+# Configure Airplay
+Launch **make menuconfig** to configure buildroot, find airplay and enable it in the following path
+```
+$ make menuconfig
+-->Target packages -->Networking applications
+   [*] airplay
+$ make
+```
