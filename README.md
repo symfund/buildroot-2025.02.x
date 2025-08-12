@@ -56,7 +56,7 @@ $ make menuconfig
 -->Bootloaders --> Board defconfig
        ma35d1_spinand
 ```
-- Rebuild system with (dist)clean
+- Rebuild system without (dist)clean
 ```
 $ make uboot-dirclean uboot-rebuild; for pkg in $(make uboot-show-recursive-rdepends); do make $pkg-rebuild; done; make
 ```
