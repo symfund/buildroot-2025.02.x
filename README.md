@@ -61,7 +61,7 @@ $ make menuconfig
 $ make uboot-dirclean uboot-rebuild; for pkg in $(make uboot-show-recursive-rdepends); do make $pkg-rebuild; done; make
 ```
 
-# Change board (buildroot) configuration
+# Change board configuration
 When complete building system image for one board, if you want to build for another board,
 
 - Load another board configuration (configs/*_defconfig)
