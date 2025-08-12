@@ -39,7 +39,6 @@ config BR2_PACKAGE_FFMPEG_NONFREE
 
 config BR2_PACKAGE_FFMPEG_FFMPEG
 	bool "Build ffmpeg (the command line application)"
-	default y
 	help
 	  FFmpeg is a very fast video and audio converter.
 	  It can also grab from a live audio/video source.
