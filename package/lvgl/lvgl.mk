@@ -13,6 +13,10 @@ LVGL_LICENSE_FILES = LICENCE.txt
 
 LVGL_DEPENDENCIES = host-cmake
 
+ifeq ($(BR2_LVGL_WAYLAND_BACKEND),y)
+LVGL_DEPENDENCIES += wayland wayland-protocols
+endif
+
 LVGL_COLOR_DEPTH = $(call qstrip,$(BR2_LVGL_COLOR_DEPTH))
 
 LVGL_DISPLAY_BACKEND = $(call qstrip,$(BR2_LVGL_DISPLAY_BACKEND))
