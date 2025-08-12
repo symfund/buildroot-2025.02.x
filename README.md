@@ -60,3 +60,18 @@ $ make menuconfig
 ```
 $ make uboot-dirclean uboot-rebuild; for pkg in $(make uboot-show-recursive-rdepends); do make $pkg-rebuild; done; make
 ```
+
+# Change board (buildroot) configuration
+When complete building system image for one board, if you want to build for another board,
+
+- Load another board configuration (configs/*_defconfig)
+```
+$ make list-defconfigs | grep ma35
+$ make numaker_iot_ma35d16f90_defconfig
+```
+- First clean, then build
+```
+$ rm -rf output/images; mkdir -p output/images
+$ make arm-trusted-firmware-dirclean uboot-dirclean optee-os-dirclean linux-dirclean
+$ make
+```
