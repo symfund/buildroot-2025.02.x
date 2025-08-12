@@ -11,7 +11,7 @@ The following boards are verified using Raspberry Pi 5 as the build machine.
 4. NuMaker-SOM-MA35D16A81 V2.1
 
 # Configure Weston in Buildroot
-![weston](https://private-user-images.githubusercontent.com/1295065/475496824-c24558c6-27d8-4487-9042-0745f89c8613.png?jwt=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NTQ5MTM3MjYsIm5iZiI6MTc1NDkxMzQyNiwicGF0aCI6Ii8xMjk1MDY1LzQ3NTQ5NjgyNC1jMjQ1NThjNi0yN2Q4LTQ0ODctOTA0Mi0wNzQ1Zjg5Yzg2MTMucG5nP1gtQW16LUFsZ29yaXRobT1BV1M0LUhNQUMtU0hBMjU2JlgtQW16LUNyZWRlbnRpYWw9QUtJQVZDT0RZTFNBNTNQUUs0WkElMkYyMDI1MDgxMSUyRnVzLWVhc3QtMSUyRnMzJTJGYXdzNF9yZXF1ZXN0JlgtQW16LURhdGU9MjAyNTA4MTFUMTE1NzA2WiZYLUFtei1FeHBpcmVzPTMwMCZYLUFtei1TaWduYXR1cmU9ZmVhMTE4NmUxNTBlNWJiNGJiOTlhMjkxZWRhMmExYzY5ODkyMWZmYmZmZmY0NWYzYTFiODZmNjljYmI2OGJhMiZYLUFtei1TaWduZWRIZWFkZXJzPWhvc3QifQ.J1NNVKQccaQXg64feE5otlaMg--rrgBf-nnQYBesKjc)
+
 ```
 1. Git clone this repository
    $ git clone https://github.com/symfund/buildroot-2025.02.x.git
@@ -46,4 +46,17 @@ The following boards are verified using Raspberry Pi 5 as the build machine.
    _____________________________________________________________
    boot device | PG0 | PG1 | PG2 | PG3 | PG4 | PG5 | PG6 | PG7 |
    -------------------------------------------------------------
+```
+
+# Change boot device
+By default, the boot device is SD0, if you want to build system image booting from another device (SPI-NAND).
+- Configure buildroot again,
+```
+$ make menuconfig
+-->Bootloaders --> Board defconfig
+       ma35d1_spinand
+```
+- Rebuild system with (dist)clean
+```
+$ make uboot-dirclean uboot-rebuild; for pkg in $(make uboot-show-recursive-rdepends); do make $pkg-rebuild; done; make
 ```
