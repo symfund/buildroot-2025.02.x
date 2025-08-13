@@ -6,7 +6,7 @@
 #
 ################################################################################
 
-AIRPLAY_VERSION = eea6f51d8efae740bab3d731e4c63b47e581a7fa
+AIRPLAY_VERSION = c51b37c71d11b9ab42875dfa4cb3fb413940f068
 AIRPLAY_SITE = https://github.com/antimof/UxPlay.git
 AIRPLAY_SITE_METHOD = git
 AIRPLAY_LICENSE = GPL-3.0
