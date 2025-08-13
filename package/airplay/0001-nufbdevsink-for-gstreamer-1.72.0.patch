@@ -1,12 +1,7 @@
-diff -urN a/.applied_patches_list b/.applied_patches_list
---- a/.applied_patches_list	2025-08-12 16:56:05.493699840 +0800
-+++ b/.applied_patches_list	2025-08-12 16:49:00.768872278 +0800
-@@ -0,0 +1 @@
-+/home/arthur/Projects/buildroot-2025.02.x-symfund/package/airplay/0001-nufbdevsink-for-gstreamer-1.71.1.patch
 diff -urN a/renderers/video_renderer.c b/renderers/video_renderer.c
---- a/renderers/video_renderer.c	2024-12-21 07:19:20.000000000 +0800
-+++ b/renderers/video_renderer.c	2025-08-12 16:49:00.775206820 +0800
-@@ -270,7 +270,7 @@
+--- a/renderers/video_renderer.c	2025-04-23 12:12:31.000000000 +0800
++++ b/renderers/video_renderer.c	2025-08-13 09:34:22.270954692 +0800
+@@ -292,7 +292,7 @@
              append_videoflip(launch, &videoflip[0], &videoflip[1]);
              g_string_append(launch, converter);
              g_string_append(launch, " ! ");
@@ -16,9 +11,9 @@ diff -urN a/renderers/video_renderer.c b/renderers/video_renderer.c
              g_string_append(launch, " name=");
              g_string_append(launch, videosink);
 diff -urN a/uxplay.cpp b/uxplay.cpp
---- a/uxplay.cpp	2024-12-21 07:19:20.000000000 +0800
-+++ b/uxplay.cpp	2025-08-12 16:55:38.850727629 +0800
-@@ -121,6 +121,11 @@
+--- a/uxplay.cpp	2025-04-23 12:12:31.000000000 +0800
++++ b/uxplay.cpp	2025-08-13 09:38:09.264028836 +0800
+@@ -125,6 +125,11 @@
  static unsigned char audio_type = 0x00;
  static unsigned char previous_audio_type = 0x00;
  static bool fullscreen = false;
@@ -28,18 +23,18 @@ diff -urN a/uxplay.cpp b/uxplay.cpp
 +static std::string nsypos = "";
 +static std::string nsrotate = "";
  static std::string coverart_filename = "";
+ static std::string metadata_filename = "";
  static bool do_append_hostname = true;
- static bool use_random_hw_addr = false;
-@@ -644,7 +649,7 @@
+@@ -698,7 +703,7 @@
      printf("          another choice when using v4l2h264dec: v4l2convert\n");
      printf("-vs ...   Choose the GStreamer videosink; default \"autovideosink\"\n");
      printf("          some choices: ximagesink,xvimagesink,vaapisink,glimagesink,\n");
 -    printf("          gtksink,waylandsink,osxvideosink,kmssink,d3d11videosink etc.\n");
-+    printf("          gtksink,waylandsink,osxvideosink,kmssink,d3d11videosink nufbdevsink etc.\n");
++    printf("          gtksink,waylandsink,osxvideosink,kmssink,d3d11videosink,nufbdevsink etc.\n");
      printf("-vs 0     Streamed audio only, with no video display window\n");
      printf("-v4l2     Use Video4Linux2 for GPU hardware h264 decoding\n");
      printf("-bt709    Sometimes needed for Raspberry Pi models using Video4Linux2 \n");
-@@ -1196,6 +1201,21 @@
+@@ -1322,6 +1327,21 @@
              h265_support = true;
          } else if (arg == "-nofreeze") {
              nofreeze = true;
@@ -61,7 +56,7 @@ diff -urN a/uxplay.cpp b/uxplay.cpp
          } else {
              fprintf(stderr, "unknown option %s, stopping (for help use option \"-h\")\n",argv[i]);
              exit(1);
-@@ -2184,6 +2204,34 @@
+@@ -2377,6 +2397,34 @@
                 "Use Alt-Enter key combination to toggle into/out of full-screen mode");
      }
  
