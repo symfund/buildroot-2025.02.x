@@ -10,6 +10,13 @@ The following boards are verified using Raspberry Pi 5 as the build machine.
 3. NuMaker-IoT-MA35D16F70 V2.2
 4. NuMaker-SOM-MA35D16A81 V2.1
 
+# Set up build environment on Ubuntu 25.04
+```
+$ sudo apt update
+$ sudo apt upgrade
+$ sudo apt install git build-essential libncurses-dev
+```
+
 # Configure Weston in Buildroot
 
 ```
