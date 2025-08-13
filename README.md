@@ -49,10 +49,11 @@ $ sudo apt install git build-essential libncurses-dev
    Before making bootable SD, execute fdisk to check the real device path of your SD card.
    $ sudo fdisk -l
    $ sudo dd if=output/images/core-image-buildroot-ma35d1-som-256m.rootfs.sdcard of=/dev/sdb conv=fsync
-8. Configure boot jumper pins to boot from SD card 
-   _____________________________________________________________
-   boot device | PG0 | PG1 | PG2 | PG3 | PG4 | PG5 | PG6 | PG7 |
-   -------------------------------------------------------------
+8. Configure boot jumper pins to boot from SD0 card 
+   
+   | boot device | PG0 | PG1 | PG2 | PG3 | PG4 | PG5 | PG6 | PG7 |
+   | ----------- | --- | --- | --- | --- | --- | --- | --- | --- |
+   |    SD0      |  ON | OFF |  ON | OFF | OFF | OFF | OFF | OFF |
 ```
 
 # Change boot device
