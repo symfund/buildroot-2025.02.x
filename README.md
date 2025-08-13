@@ -61,8 +61,9 @@ By default, the boot device is SD0, if you want to build system image booting fr
 - Configure buildroot again,
 ```
 $ make menuconfig
--->Bootloaders --> Board defconfig
-       ma35d1_spinand
+-->Bootloaders
+   [*] U-Boot
+   (ma35d1_spinand) Board defconfig
 ```
 - Rebuild system without (dist)clean
 ```
