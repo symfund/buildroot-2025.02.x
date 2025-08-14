@@ -103,7 +103,14 @@ To figure out the Linux kernel device tree file to change, execute **make menuco
 --> Kernel
     (nuvoton/ma35d1-som-512m) In-tree Device Tree Source file names
 ```
-As show above, the Linux kernel device tree source file is 'output/build/linux-custom/arch/arm64/boot/dts/nuvoton/ma35d1-som-512m.dts'.
+As show above, the Linux kernel device tree source file is **ma35d1-som-512m.dts**.
+If a file named **_local.mk_** in the root directory of buildroot, and in local.mk, the value **/path/to/linux/source** is assigned to variable **LINUX_OVERRIDE_SRCDIR** 
+```
+LINUX_OVERRIDE_SRCDIR=/path/to/linux/source
+```
+then you should edit the file **/path/to/linux/source/arch/arm64/boot/dts/nuvoton/ma35d1-som-512m.dts**, otherwise the file
+**output/build/linux-custom/arch/arm64/boot/dts/nuvoton/ma35d1-som-512m.dts**.
+
 Now, you can enable the **capacitive** touchscreen as below
 ```
 &adc0 {
