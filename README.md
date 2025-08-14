@@ -86,7 +86,9 @@ $ make
 ```
 
 # Configure Airplay
-- Launch **make menuconfig** to configure buildroot, find airplay and enable it in the following path
+- Launch **make menuconfig** to configure buildroot
+
+Find airplay and enable it in the following path
 ```
 $ make menuconfig
 -->Target packages -->Networking applications
@@ -94,6 +96,7 @@ $ make menuconfig
 $ make
 ```
 - Increase vc8k's reserved memory for H.264 decoding
+
 Navigate the section **Troubeshoot touchscreen** to find the Linux kernel device tree source file (*.dts) to increase the reserved memory for vc8k.
 ```
 resered-memory {
