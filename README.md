@@ -93,3 +93,39 @@ $ make menuconfig
    [*] airplay
 $ make
 ```
+
+# Troubleshoot touchscreen
+MA35 boards support two types of touchscreen, the ADC interface (&adc0) resistive touch screen and the I2C interface (&i2c5) capacitive touchscreen.
+If you do not know which is which, you can edit Linux kernel device tree file to first enable &adc0, disable &i2c5 to turn on the resistive touch screen, and vice versa.
+There are so many Linux kernel device tree files in 'output/build/linux-custom/arch/arm64/boot/dts/nuvoton/'. Which Linux kernel device tree file (*.dts) should you modify?
+To figure out the Linux kernel device tree file to change, execute **make menuconfig** to configure buildroot, in kernel menu, find the 'In-tree Device Source file names'.
+```
+--> Kernel
+    (nuvoton/ma35d1-som-512m) In-tree Device Tree Source file names
+```
+As show above, the Linux kernel device tree source file is 'output/build/linux-custom/arch/arm64/boot/dts/nuvoton/ma35d1-som-512m.dts'.
+Now, you can enable the **capacitive** touchscreen as below
+```
+&adc0 {
+    status = "disabled";
+    ...
+};
+
+&i2c5 {
+    status = "okay";
+    ...
+}
+```
+
+It is worth mentioning that you should reconfigure weston to use the correct type of touchscreen. 
+Again, launch **make menuconfig** to configure buildroot
+```
+--> Target packages --> Graphic libraries and applications
+    [*] weston
+            touchscreen type (capacitive)   --->
+```
+
+Finally, rebuild the system images 
+```
+$ make weston-rebuild linux-rebuild && make
+```
