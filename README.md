@@ -49,7 +49,7 @@ $ sudo apt install git build-essential libncurses-dev
    Before making bootable SD, execute fdisk to check the real device path of your SD card.
    $ sudo fdisk -l
    $ sudo dd if=output/images/core-image-buildroot-ma35d1-som-256m.rootfs.sdcard of=/dev/sdb conv=fsync
-8. Configure boot jumper pins to boot from SD0 card 
+8. Configure Power-on-Setting jumper to boot from SD0 card 
    
    | boot device | PG0 | PG1 | PG2 | PG3 | PG4 | PG5 | PG6 | PG7 |
    | ----------- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -67,7 +67,9 @@ $ make menuconfig
 ```
 - Rebuild system without (dist)clean
 ```
-$ make uboot-dirclean uboot-rebuild; for pkg in $(make uboot-show-recursive-rdepends); do make $pkg-rebuild; done; make
+$ make uboot-dirclean uboot-rebuild
+$ for pkg in $(make uboot-show-recursive-rdepends); do make $pkg-rebuild; done
+$ make
 ```
 
 # Change board configuration
@@ -110,7 +112,7 @@ resered-memory {
 
 # Troubleshoot touchscreen
 MA35 boards support two types of touchscreen, the ADC interface (&adc0) resistive touch screen and the I2C interface (&i2c5) capacitive touchscreen.
-If you do not know which is which, you can edit Linux kernel device tree file to first enable &adc0, disable &i2c5 to turn on the resistive touch screen, and vice versa.
+If you do not know which is which, you can edit Linux kernel device tree file to enable &adc0, disable &i2c5 to use the resistive touch screen, and vice versa.
 There are so many Linux kernel device tree files in 'output/build/linux-custom/arch/arm64/boot/dts/nuvoton/'. Which Linux kernel device tree file (*.dts) should you modify?
 To figure out the Linux kernel device tree source file to change, execute **make menuconfig** to configure buildroot, in **Kernel** menu, find the **In-tree Device Source file names**
 ```
@@ -122,7 +124,7 @@ If a file named **_local.mk_** in the root directory of buildroot, and in local.
 ```
 LINUX_OVERRIDE_SRCDIR=/path/to/linux/source
 ```
-then you should edit the file **/path/to/linux/source/arch/arm64/boot/dts/nuvoton/ma35d1-som-512m.dts**, otherwise the file
+then you should edit the file **/path/to/linux/source/arch/arm64/boot/dts/nuvoton/ma35d1-som-512m.dts**, otherwise modify the file
 **output/build/linux-custom/arch/arm64/boot/dts/nuvoton/ma35d1-som-512m.dts**.
 
 Now, you can enable the **capacitive** touchscreen as below
